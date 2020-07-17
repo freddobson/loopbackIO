@@ -6,51 +6,59 @@ class Api:
     def __init__(self, url, token, headers=None):
         self.url = url
         self.token = token
-        if headers not None:
+        if headers is not None:
             if isinstance(headers,dict):
                 self.header = headers
-                self.header['Authorization'] = token
-            self.header = {'Authorization': token}
-
-class Filter:			logging.error("Supply a valid Api object.")
+                self.header['Authorization'] = token            
             else:
                 logging.warning('"headers" must be of type "dict". Skipping')
                 self.header = {'Authorization': token}
         else:
-			raise Exception('ApiError')
-		self.object_type = object_type
-		self.api = api
+            self.header = {'Authorization': token}
 
-        self.where = where # dict
-    def __init__(self, where=None, order=None, fields=None, include=None:
+
+
+
+class Filter:        
+    def __init__(self, where=None, order=None, fields=None, include=None):
         self.order = order
-		
-        self.fields = fields        self.include = include
+        self.where = where # dict        
+        self.fields = fields        
+        self.include = include
 
 
-		if not isinstance(filter, Filter):
+      
 class Request:
-	def __init__(self, object_type, api):
-		if not isinstance(api, Api)
-	def get(self, filter, unlimited=False):
-			logging.error("filter parameter must be instance of Filter class.")
-			raise Exception('FilterError')
-		request_url = self.api.url + '/api/' + self.object_type + '?filter='			try:
+    def __init__(self, object_type, api):
+        if not isinstance(api, Api):
+            raise Exception('ApiError')
+            logging.error("Supply a valid Api object.")
+        else:
+            self.object_type = object_type
+            self.api = api        
+    def get(self, filter, unlimited=False):
+        if not isinstance(filter, Filter):
+            logging.error("filter parameter must be instance of Filter class.")
+            raise Exception('FilterError')  
+        request_url = self.api.url + '/api/' + self.object_type + '?filter='            
 
-		payload = dict()			payload['where'] = filter.where
-		while True:
+        payload = dict()            
+        if filter.where is not None:
+            payload['where'] = filter.where
+		
+        while True:
 
-		payload['skip'], payload['limit'] = 0, 1000
-				response = requests.get(request_url + json.dumps(payload), headers=self.api.header)
-		if filter.where is not None:
-			except:
-				logging.error("The error is {0}",format(err))
-				raise Exception("RequestError")
-			if response.status_code != 200:
-                logging.error(str(response.status_code) + " " + response.reason + ": " + response.json()['error']['message']
+            payload['skip'], payload['limit'] = 0, 1000
+            try:
+                response = requests.get(request_url + json.dumps(payload), headers=self.api.header)    
+            except:
+                logging.error("The error is {0}",format(err))
+                raise Exception("RequestError")
+            if response.status_code != 200:
+                logging.error(str(response.status_code) + " " + response.reason + ": " + response.json()['error']['message'])
                 raise Exception("httpError")
             else:
-                logging.info('Successful request: " + request.utils.unquote(response.request.url))
+                logging.info('Successful request: ' + requests.utils.unquote(response.request.url))
             if (payload['skip'] == 0):
                 response = response.json()
                 if not unlimited:
@@ -62,5 +70,5 @@ class Request:
                     break
             payload['skip'] += 1000
         return response
-			
-		
+            
+        

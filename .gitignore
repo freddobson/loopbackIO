@@ -2,4 +2,5 @@
 /Lib/
 /Scripts/
 /tcl/
+/__pycache__/
 LICENSE.txt
